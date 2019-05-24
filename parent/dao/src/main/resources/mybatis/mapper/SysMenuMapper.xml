@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.middle.mapper.SysMenuMapper" >
+  <resultMap id="BaseResultMap" type="cn.middle.pojo.SysMenu" >
+    <id column="menu_id" property="menuId" jdbcType="VARCHAR" />
+    <result column="menu_name" property="menuName" jdbcType="VARCHAR" />
+    <result column="menu_url" property="menuUrl" jdbcType="VARCHAR" />
+    <result column="menu_parent_id" property="menuParentId" jdbcType="VARCHAR" />
+    <result column="belong_system" property="belongSystem" jdbcType="VARCHAR" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
+    <result column="icon" property="icon" jdbcType="VARCHAR" />
+    <result column="icon_hover" property="iconHover" jdbcType="VARCHAR" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="del_flag" property="delFlag" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    menu_id, menu_name, menu_url, menu_parent_id, belong_system, sort, icon, icon_hover,
+    remarks, create_user, create_time, update_user, update_time, del_flag
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_menu
+    where menu_id = #{menuId,jdbcType=VARCHAR}
+  </select>
+  
+    <select id="findList" resultType="cn.middle.pojo.SysMenu" parameterType="cn.middle.pojo.SysMenu">
+        SELECT
+            a.menu_id AS menuId,
+            a.menu_name AS menuName,
+            a.menu_url AS menuUrl,
+            a.menu_parent_id AS menuParentId,
+            a.belong_system AS belongSystem,
+            a.sort AS sort,
+            a.icon AS icon,
+            a.icon_hover AS iconHover,
+            a.remarks AS remarks,
+            a.create_user AS createUser,
+            a.create_time AS createTime,
+            a.update_user AS updateUser,
+            a.update_time AS updateTime,
+            a.del_flag AS delFlag
+        FROM sys_menu a
+        WHERE a.del_flag = #{delFlag}
+        ORDER BY a.sort
+    </select>
+    
+    <select id="findListByRoleId" resultType="cn.middle.pojo.SysMenu" parameterType="cn.middle.pojo.SysMenu">
+        SELECT
+            a.menu_id AS menuId,
+            a.menu_name AS menuName,
+            a.menu_url AS menuUrl,
+            a.menu_parent_id AS menuParentId,
+            a.belong_system AS belongSystem,
+            a.sort AS sort,
+            a.icon AS icon,
+            a.icon_hover AS iconHover,
+            a.remarks AS remarks,
+            a.create_user AS createUser,
+            a.create_time AS createTime,
+            a.update_user AS updateUser,
+            a.update_time AS updateTime,
+            a.del_flag AS delFlag,
+            p.menu_name AS menuPName
+        FROM sys_menu a
+        LEFT JOIN sys_menu p ON p.menu_id = a.menu_parent_id
+        JOIN sys_role_menu rm ON rm.menu_id = a.menu_id
+        JOIN sys_role r ON r.role_id = rm.role_id 
+        WHERE r.role_id = #{roleId}
+            AND a.del_flag = '0'
+            AND r.del_flag = '0'
+        ORDER BY a.sort
+    </select>
+    
+    <select id="selectMenuByUserId" resultType="cn.middle.pojo.SysMenu" parameterType="cn.middle.pojo.SysMenu">
+        SELECT DISTINCT
+                a.menu_id AS menuId,
+                a.menu_name AS menuName,
+                a.menu_url AS menuUrl,
+                a.sort AS sort,
+                a.menu_parent_id AS menuParentId,
+                a.belong_system AS belongSystem,
+                a.sort AS sort,
+                a.icon AS icon,
+                a.icon_hover AS iconHover,
+                a.remarks AS remarks,
+                a.create_user AS createUser,
+                a.create_time AS createTime,
+                a.update_user AS updateUser,
+                a.update_time AS updateTime,
+                a.del_flag AS delFlag,
+                p.menu_name AS menuPName
+        FROM
+            sys_menu a
+        LEFT JOIN sys_menu p ON p.menu_id = a.menu_parent_id
+        JOIN sys_role_menu rm ON rm.menu_id = a.menu_id
+        JOIN sys_role r ON r.role_id = rm.role_id 
+        JOIN sys_user_role ur ON ur.role_id = r.role_id
+        JOIN sys_user u ON u.user_id = ur.user_id
+        WHERE u.user_id = #{userId}
+        <if test="menuParentId != null" >
+            AND a.menu_parent_id = #{menuParentId}
+        </if>
+        AND a.del_flag = '0' AND r.del_flag = '0' AND u.del_flag = '0' 
+        ORDER BY a.sort
+    </select>
+    
+    <select id="getMenuCount" resultType="java.lang.Integer" parameterType="cn.middle.pojo.SysMenu">
+        SELECT count(1)
+        FROM sys_menu a
+        WHERE a.del_flag = #{delFlag}
+            AND a.menu_parent_id = #{menuId}
+    </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from sys_menu
+    where menu_id = #{menuId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.middle.pojo.SysMenu" >
+    insert into sys_menu (menu_id, menu_name, menu_url, 
+      menu_parent_id, belong_system, sort, icon, icon_hover, remarks, 
+      create_user, create_time, update_user, 
+      update_time, del_flag)
+    values (#{menuId,jdbcType=VARCHAR}, #{menuName,jdbcType=VARCHAR}, #{menuUrl,jdbcType=VARCHAR}, 
+      #{menuParentId,jdbcType=VARCHAR}, #{belongSystem,jdbcType=VARCHAR}, #{sort,jdbcType=INTEGER}, #{icon,jdbcType=VARCHAR},
+      #{iconHover,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{delFlag,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.middle.pojo.SysMenu" >
+    insert into sys_menu
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="menuId != null" >
+        menu_id,
+      </if>
+      <if test="menuName != null" >
+        menu_name,
+      </if>
+      <if test="menuUrl != null" >
+        menu_url,
+      </if>
+      <if test="menuParentId != null" >
+        menu_parent_id,
+      </if>
+      <if test="belongSystem != null" >
+        belong_system,
+      </if>
+      <if test="sort != null" >
+        sort,
+      </if>
+      <if test="icon != null" >
+        icon,
+      </if>
+      <if test="iconHover != null" >
+        icon_hover,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="delFlag != null" >
+        del_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="menuId != null" >
+        #{menuId,jdbcType=VARCHAR},
+      </if>
+      <if test="menuName != null" >
+        #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuUrl != null" >
+        #{menuUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="menuParentId != null" >
+        #{menuParentId,jdbcType=VARCHAR},
+      </if>
+      <if test="belongSystem != null" >
+        #{belongSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="icon != null" >
+        #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="iconHover != null" >
+        #{iconHover,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null" >
+        #{delFlag,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.middle.pojo.SysMenu" >
+    update sys_menu
+    <set >
+      <if test="menuName != null" >
+        menu_name = #{menuName,jdbcType=VARCHAR},
+      </if>
+      <if test="menuUrl != null" >
+        menu_url = #{menuUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="menuParentId != null" >
+        menu_parent_id = #{menuParentId,jdbcType=VARCHAR},
+      </if>
+      <if test="belongSystem != null" >
+        belong_system = #{belongSystem,jdbcType=VARCHAR},
+      </if>
+      <if test="sort != null" >
+        sort = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="icon != null" >
+        icon = #{icon,jdbcType=VARCHAR},
+      </if>
+      <if test="iconHover != null" >
+        icon_hover = #{iconHover,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null" >
+        del_flag = #{delFlag,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where menu_id = #{menuId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.middle.pojo.SysMenu" >
+    update sys_menu
+    set menu_name = #{menuName,jdbcType=VARCHAR},
+      menu_url = #{menuUrl,jdbcType=VARCHAR},
+      menu_parent_id = #{menuParentId,jdbcType=VARCHAR},
+      belong_system = #{belongSystem,jdbcType=VARCHAR},
+      sort = #{sort,jdbcType=INTEGER},
+      icon = #{icon,jdbcType=VARCHAR},
+      icon_hover = #{iconHover,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      del_flag = #{delFlag,jdbcType=VARCHAR}
+    where menu_id = #{menuId,jdbcType=VARCHAR}
+  </update>
+  
+    <update id="deleteByMenuId" parameterType="cn.middle.pojo.SysMenu">
+        update sys_menu 
+        set update_user = #{updateUser},
+            update_time = #{updateTime},
+            del_flag = #{delFlag}
+        where menu_id = #{menuId}
+    </update>
+    
+</mapper>

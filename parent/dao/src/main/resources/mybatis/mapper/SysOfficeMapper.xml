@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.middle.mapper.SysOfficeMapper" >
+  <resultMap id="BaseResultMap" type="cn.middle.pojo.SysOffice" >
+    <id column="office_id" property="officeId" jdbcType="VARCHAR" />
+    <result column="office_code" property="officeCode" jdbcType="VARCHAR" />
+    <result column="office_name" property="officeName" jdbcType="VARCHAR" />
+    <result column="parent_office_id" property="parentOfficeId" jdbcType="VARCHAR" />
+    <result column="office_level" property="officeLevel" jdbcType="VARCHAR" />
+    <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="del_flag" property="delFlag" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    office_id, office_code, office_name, parent_office_id, remarks, 
+    office_level, create_user, create_time, update_user, update_time, del_flag
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_office
+    where office_id = #{officeId,jdbcType=VARCHAR}
+  </select>
+    
+    <select id="getOffice" resultType="cn.middle.pojo.SysOffice" parameterType="cn.middle.pojo.SysOffice">
+        SELECT
+            a.office_id AS officeId, 
+            a.office_code AS officeCode, 
+            a.office_name AS officeName, 
+            a.parent_office_id AS parentOfficeId, 
+            a.office_level AS officeLevel,
+            a.remarks AS remarks, 
+            a.create_user AS createUser, 
+            a.create_time AS createTime, 
+            a.update_user AS updateUser, 
+            a.update_time AS updateTime, 
+            a.del_flag AS delFlag
+        FROM sys_office a
+        WHERE a.del_flag = #{delFlag}
+            AND a.office_id = #{officeId}
+    </select>
+    
+    <select id="findList" resultType="cn.middle.pojo.SysOffice" parameterType="cn.middle.pojo.SysOffice">
+        SELECT 
+           office_id AS officeId, 
+           office_code AS officeCode, 
+           office_name AS officeName, 
+           parent_office_id AS parentOfficeId, 
+           office_level AS officeLevel,
+           remarks AS remarks, 
+           create_user AS createUser, 
+           create_time AS createTime, 
+           update_user AS updateUser, 
+           update_time AS updateTime, 
+           del_flag AS delFlag
+        FROM sys_office a
+        WHERE 1=1
+            AND a.del_flag = #{delFlag}
+        ORDER BY a.office_code ASC
+    </select>
+    
+    <select id="getUserCount" resultType="java.lang.Integer" parameterType="cn.middle.pojo.SysOffice">
+        SELECT count(1)
+        FROM sys_user a
+        WHERE a.del_flag = #{delFlag}
+            AND a.office_id = #{officeId}
+    </select>
+    
+    <select id="getOfficeCount" resultType="java.lang.Integer" parameterType="cn.middle.pojo.SysOffice">
+        SELECT count(1)
+        FROM sys_office a
+        WHERE a.del_flag = #{delFlag}
+            AND a.parent_office_id = #{officeId}
+        ORDER BY a.office_code ASC
+    </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from sys_office
+    where office_id = #{officeId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="cn.middle.pojo.SysOffice" >
+    insert into sys_office (office_id, office_code, office_name, 
+      parent_office_id, office_level, remarks, create_user, 
+      create_time, update_user, update_time, del_flag)
+    values (#{officeId,jdbcType=VARCHAR}, #{officeCode,jdbcType=VARCHAR}, #{officeName,jdbcType=VARCHAR}, 
+      #{parentOfficeId,jdbcType=VARCHAR}, #{officeLevel,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR}, 
+      #{createUser,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{delFlag,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.middle.pojo.SysOffice" >
+    insert into sys_office
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="officeId != null" >
+        office_id,
+      </if>
+      <if test="officeCode != null" >
+        office_code,
+      </if>
+      <if test="officeName != null" >
+        office_name,
+      </if>
+      <if test="parentOfficeId != null" >
+        parent_office_id,
+      </if>
+      <if test="officeLevel != null" >
+        office_level,
+      </if>
+      <if test="remarks != null" >
+        remarks,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateUser != null" >
+        update_user,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="delFlag != null" >
+        del_flag,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="officeId != null" >
+        #{officeId,jdbcType=VARCHAR},
+      </if>
+      <if test="officeCode != null" >
+        #{officeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="officeName != null" >
+        #{officeName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentOfficeId != null" >
+        #{parentOfficeId,jdbcType=VARCHAR},
+      </if>
+      <if test="officeLevel != null" >
+        #{officeLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null" >
+        #{delFlag,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.middle.pojo.SysOffice" >
+    update sys_office
+    <set >
+      <if test="officeCode != null" >
+        office_code = #{officeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="officeName != null" >
+        office_name = #{officeName,jdbcType=VARCHAR},
+      </if>
+      <if test="parentOfficeId != null" >
+        parent_office_id = #{parentOfficeId,jdbcType=VARCHAR},
+      </if>
+      <if test="officeLevel != null" >
+        office_level = #{officeLevel,jdbcType=VARCHAR},
+      </if>
+      <if test="remarks != null" >
+        remarks = #{remarks,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateUser != null" >
+        update_user = #{updateUser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="delFlag != null" >
+        del_flag = #{delFlag,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where office_id = #{officeId,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.middle.pojo.SysOffice" >
+    update sys_office
+    set office_code = #{officeCode,jdbcType=VARCHAR},
+      office_name = #{officeName,jdbcType=VARCHAR},
+      parent_office_id = #{parentOfficeId,jdbcType=VARCHAR},
+      office_level = #{officeLevel,jdbcType=VARCHAR},
+      remarks = #{remarks,jdbcType=VARCHAR},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_user = #{updateUser,jdbcType=VARCHAR},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      del_flag = #{delFlag,jdbcType=VARCHAR}
+    where office_id = #{officeId,jdbcType=VARCHAR}
+  </update>
+
+    <update id="deleteByOfficeId" parameterType="cn.middle.pojo.SysOffice">
+        update sys_office 
+        set update_user = #{updateUser},
+            update_time = #{updateTime},
+            del_flag = #{delFlag}
+        where office_id = #{officeId}
+    </update>
+    
+</mapper>

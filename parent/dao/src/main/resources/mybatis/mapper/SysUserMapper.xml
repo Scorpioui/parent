@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.middle.mapper.SysUserMapper">
+    <resultMap id="BaseResultMap" type="cn.middle.pojo.SysUser">
+        <id column="user_id" property="userId" jdbcType="VARCHAR" />
+        <result column="user_name" property="userName" jdbcType="VARCHAR" />
+        <result column="user_code" property="userCode" jdbcType="VARCHAR" />
+        <result column="password" property="password" jdbcType="VARCHAR" />
+        <result column="office_id" property="officeId" jdbcType="VARCHAR" />
+        <result column="phone" property="phone" jdbcType="VARCHAR" />
+        <result column="photo" property="photo" jdbcType="VARCHAR" />
+        <result column="remarks" property="remarks" jdbcType="VARCHAR" />
+        <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+        <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+        <result column="del_flag" property="delFlag" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        user_id, user_name, user_code, password, office_id, phone, photo, remarks,
+        create_user, create_time, update_user, update_time, del_flag
+    </sql>
+    
+    <sql id="Base_Column_Basic">
+        a.user_id AS userId,
+        a.user_name AS userName,
+        a.user_code AS userCode,
+        a.password AS password,
+        a.office_id AS officeId,
+        a.phone AS phone,
+        a.photo AS photo,
+        a.remarks AS remarks,
+        a.create_user AS createUser,
+        a.create_time AS createTime,
+        a.update_user AS updateUser,
+        a.update_time AS updateTime,
+        a.del_flag AS delFlag
+    </sql>
+    
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap"
+        parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from sys_user
+        where user_id = #{userId,jdbcType=VARCHAR}
+    </select>
+
+    <select id="selectByUserCodePassword" resultType="cn.middle.pojo.SysUser"
+        parameterType="cn.middle.pojo.SysUser">
+        SELECT
+            <include refid="Base_Column_Basic" />,
+            b.office_name AS officeName
+        FROM sys_user a
+        LEFT JOIN sys_office b ON a.office_id = b.office_id AND b.del_flag = '0'
+        WHERE a.user_code = #{userCode}
+        AND a.password = #{password}
+        AND a.del_flag = #{delFlag}
+    </select>
+
+    <select id="findByUserCode" resultType="cn.middle.pojo.SysUser"
+        parameterType="cn.middle.pojo.SysUser">
+        SELECT
+            <include refid="Base_Column_Basic" />,
+            b.office_name AS officeName
+        FROM sys_user a
+        LEFT JOIN sys_office b ON a.office_id = b.office_id AND b.del_flag = '0'
+        WHERE a.user_code = #{userCode}
+        AND a.del_flag = '0'
+    </select>
+
+    <select id="findList" resultType="cn.middle.pojo.SysUser"
+        parameterType="cn.middle.pojo.SysUser">
+        SELECT
+            <include refid="Base_Column_Basic" />,
+            b.office_name AS officeName
+        FROM sys_user a
+        LEFT JOIN sys_office b ON a.office_id = b.office_id AND b.del_flag = '0'
+        WHERE 1=1
+        AND a.del_flag = #{delFlag}
+    </select>
+
+    <select id="findPage" resultType="cn.middle.pojo.SysUser"
+        parameterType="cn.middle.pojo.SysUser">
+        SELECT
+            <include refid="Base_Column_Basic" />,
+            b.office_name AS officeName
+        FROM sys_user a
+        LEFT JOIN sys_office b ON a.office_id = b.office_id AND b.del_flag = '0'
+        WHERE 1=1
+        AND a.del_flag = #{sysUser.delFlag}
+        <if test="sysUser.userName != null and sysUser.userName != ''">
+            AND a.user_name LIKE concat('%', #{sysUser.userName} , '%')
+        </if>
+        <if test="sysUser.userCode != null and sysUser.userCode != ''">
+            AND a.user_code LIKE concat('%', #{sysUser.userCode} , '%')
+        </if>
+        <if test="sysUser.phone != null and sysUser.phone != ''">
+            AND a.phone LIKE concat('%', #{sysUser.phone} , '%')
+        </if>
+        <if test="sysUser.officeId != null and sysUser.officeId != ''">
+            AND b.office_id = #{sysUser.officeId}
+        </if>
+        <if test="sysUser.officeName != null and sysUser.officeName != ''">
+            AND b.office_name LIKE concat('%', #{sysUser.officeName} , '%')
+        </if>
+        ORDER BY a.create_time DESC
+        <![CDATA[
+            LIMIT #{pageSize}, #{pageIndex}
+        ]]>
+    </select>
+
+    <select id="getCount" resultType="java.lang.Integer"
+        parameterType="cn.middle.pojo.SysUser">
+        SELECT
+        count(1)
+        FROM sys_user a
+        LEFT JOIN sys_office b ON a.office_id = b.office_id AND b.del_flag = '0'
+        WHERE 1=1
+        AND a.del_flag = #{sysUser.delFlag}
+        <if test="sysUser.userName != null and sysUser.userName != ''">
+            AND a.user_name LIKE concat('%', #{sysUser.userName} , '%')
+        </if>
+        <if test="sysUser.userCode != null and sysUser.userCode != ''">
+            AND a.user_code LIKE concat('%', #{sysUser.userCode} , '%')
+        </if>
+        <if test="sysUser.phone != null and sysUser.phone != ''">
+            AND a.phone LIKE concat('%', #{sysUser.phone} , '%')
+        </if>
+        <if test="sysUser.officeId != null and sysUser.officeId != ''">
+            AND b.office_id = #{sysUser.officeId}
+        </if>
+        <if test="sysUser.officeName != null and sysUser.officeName != ''">
+            AND b.office_name LIKE concat('%', #{sysUser.officeName} , '%')
+        </if>
+    </select>
+
+    <select id="selectByUserId" resultType="cn.middle.pojo.SysUser"
+        parameterType="cn.middle.pojo.SysUser">
+        SELECT
+            <include refid="Base_Column_Basic" />,
+            b.office_name AS officeName
+        FROM sys_user a
+        LEFT JOIN sys_office b ON a.office_id = b.office_id AND b.del_flag = '0'
+        WHERE 1=1
+        AND a.user_id = #{userId}
+        AND a.del_flag = #{delFlag}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from sys_user
+        where user_id = #{userId,jdbcType=VARCHAR}
+    </delete>
+    <insert id="insert" parameterType="cn.middle.pojo.SysUser">
+        insert into sys_user (user_id, user_name, user_code,
+        password, office_id, phone,
+        photo, remarks, create_user,
+        create_time, update_user, update_time,
+        del_flag)
+        values (#{userId,jdbcType=VARCHAR}, #{userName,jdbcType=VARCHAR},
+        #{userCode,jdbcType=VARCHAR},
+        #{password,jdbcType=VARCHAR}, #{officeId,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
+        #{photo,jdbcType=VARCHAR}, #{remarks,jdbcType=VARCHAR},
+        #{createUser,jdbcType=VARCHAR},
+        #{createTime,jdbcType=TIMESTAMP}, #{updateUser,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP},
+        #{delFlag,jdbcType=VARCHAR})
+    </insert>
+    <insert id="insertSelective" parameterType="cn.middle.pojo.SysUser">
+        insert into sys_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="userName != null">
+                user_name,
+            </if>
+            <if test="userCode != null">
+                user_code,
+            </if>
+            <if test="password != null">
+                password,
+            </if>
+            <if test="officeId != null">
+                office_id,
+            </if>
+            <if test="phone != null">
+                phone,
+            </if>
+            <if test="photo != null">
+                photo,
+            </if>
+            <if test="remarks != null">
+                remarks,
+            </if>
+            <if test="createUser != null">
+                create_user,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateUser != null">
+                update_user,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="delFlag != null">
+                del_flag,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="userName != null">
+                #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="userCode != null">
+                #{userCode,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="officeId != null">
+                #{officeId,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="photo != null">
+                #{photo,jdbcType=VARCHAR},
+            </if>
+            <if test="remarks != null">
+                #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="createUser != null">
+                #{createUser,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                #{updateUser,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="delFlag != null">
+                #{delFlag,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="cn.middle.pojo.SysUser">
+        update sys_user
+        <set>
+            <if test="userName != null">
+                user_name = #{userName,jdbcType=VARCHAR},
+            </if>
+            <if test="userCode != null">
+                user_code = #{userCode,jdbcType=VARCHAR},
+            </if>
+            <if test="password != null">
+                password = #{password,jdbcType=VARCHAR},
+            </if>
+            <if test="officeId != null">
+                office_id = #{officeId,jdbcType=VARCHAR},
+            </if>
+            <if test="phone != null">
+                phone = #{phone,jdbcType=VARCHAR},
+            </if>
+            <if test="photo != null">
+                photo = #{photo,jdbcType=VARCHAR},
+            </if>
+            <if test="remarks != null">
+                remarks = #{remarks,jdbcType=VARCHAR},
+            </if>
+            <if test="createUser != null">
+                create_user = #{createUser,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where user_id = #{userId,jdbcType=VARCHAR}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="cn.middle.pojo.SysUser">
+        update sys_user
+        set user_name = #{userName,jdbcType=VARCHAR},
+        user_code = #{userCode,jdbcType=VARCHAR},
+        password = #{password,jdbcType=VARCHAR},
+        office_id = #{officeId,jdbcType=VARCHAR},
+        phone = #{phone,jdbcType=VARCHAR},
+        photo = #{photo,jdbcType=VARCHAR},
+        remarks = #{remarks,jdbcType=VARCHAR},
+        create_user = #{createUser,jdbcType=VARCHAR},
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+        update_user = #{updateUser,jdbcType=VARCHAR},
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+        del_flag = #{delFlag,jdbcType=VARCHAR}
+        where user_id = #{userId,jdbcType=VARCHAR}
+    </update>
+
+    <update id="deleteByUserId" parameterType="cn.middle.pojo.SysUser">
+        update sys_user
+        set update_user = #{updateUser},
+        update_time = #{updateTime},
+        del_flag = #{delFlag}
+        where user_id = #{userId}
+    </update>
+
+    <update id="initializaPassword" parameterType="cn.middle.pojo.SysUser">
+        update sys_user
+        set password = #{confirmPassword},
+        update_user = #{updateUser},
+        update_time = #{updateTime},
+        del_flag = #{delFlag}
+        where user_id = #{userId}
+    </update>
+
+</mapper>
