@@ -1,84 +1,89 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.middle.mapper.SysUserRoleMapper" >
-  <resultMap id="BaseResultMap" type="cn.middle.pojo.SysUserRole" >
-    <id column="sys_user_role_id" property="sysUserRoleId" jdbcType="VARCHAR" />
-    <result column="user_id" property="userId" jdbcType="VARCHAR" />
-    <result column="role_id" property="roleId" jdbcType="VARCHAR" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    sys_user_role_id, user_id, role_id
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from sys_user_role
-    where sys_user_role_id = #{sysUserRoleId,jdbcType=VARCHAR}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from sys_user_role
-    where sys_user_role_id = #{sysUserRoleId,jdbcType=VARCHAR}
-  </delete>
+<mapper namespace="cn.middle.mapper.SysUserRoleMapper">
+    <resultMap id="BaseResultMap" type="cn.middle.pojo.SysUserRole">
+        <id column="sys_user_role_id" property="sysUserRoleId" jdbcType="VARCHAR" />
+        <result column="user_id" property="userId" jdbcType="VARCHAR" />
+        <result column="role_id" property="roleId" jdbcType="VARCHAR" />
+    </resultMap>
     
+    <sql id="Base_Column_List">
+        sys_user_role_id, user_id, role_id
+    </sql>
+    
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap"
+        parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List" />
+        from sys_user_role
+        where sys_user_role_id = #{sysUserRoleId,jdbcType=VARCHAR}
+    </select>
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from sys_user_role
+        where sys_user_role_id = #{sysUserRoleId,jdbcType=VARCHAR}
+    </delete>
+
     <delete id="deleteByUserId" parameterType="cn.middle.pojo.SysUserRole">
         DELETE FROM sys_user_role WHERE user_id = #{userId}
     </delete>
-    
-    <insert id ="insertSysUserRoles" parameterType="java.util.List" >
-        insert into sys_user_role 
-            (sys_user_role_id, user_id, role_id) values
-        <foreach collection ="list" item="sysUserRole" index= "index" separator =",">
-            (#{sysUserRole.sysUserRoleId,jdbcType=VARCHAR}, #{sysUserRole.userId,jdbcType=VARCHAR}, #{sysUserRole.roleId,jdbcType=VARCHAR})
-        </foreach >
+
+    <insert id="insertSysUserRoles" parameterType="java.util.List">
+        insert into sys_user_role (sys_user_role_id, user_id, role_id) values
+        <foreach collection="list" item="sysUserRole" index="index" separator=",">
+            (#{sysUserRole.sysUserRoleId,jdbcType=VARCHAR}, #{sysUserRole.userId,jdbcType=VARCHAR},
+            #{sysUserRole.roleId,jdbcType=VARCHAR})
+        </foreach>
     </insert>
-  
-  <insert id="insert" parameterType="cn.middle.pojo.SysUserRole" >
-    insert into sys_user_role (sys_user_role_id, user_id, role_id
-      )
-    values (#{sysUserRoleId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="cn.middle.pojo.SysUserRole" >
-    insert into sys_user_role
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="sysUserRoleId != null" >
-        sys_user_role_id,
-      </if>
-      <if test="userId != null" >
-        user_id,
-      </if>
-      <if test="roleId != null" >
-        role_id,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="sysUserRoleId != null" >
-        #{sysUserRoleId,jdbcType=VARCHAR},
-      </if>
-      <if test="userId != null" >
-        #{userId,jdbcType=VARCHAR},
-      </if>
-      <if test="roleId != null" >
-        #{roleId,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="cn.middle.pojo.SysUserRole" >
-    update sys_user_role
-    <set >
-      <if test="userId != null" >
-        user_id = #{userId,jdbcType=VARCHAR},
-      </if>
-      <if test="roleId != null" >
-        role_id = #{roleId,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where sys_user_role_id = #{sysUserRoleId,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="cn.middle.pojo.SysUserRole" >
-    update sys_user_role
-    set user_id = #{userId,jdbcType=VARCHAR},
-      role_id = #{roleId,jdbcType=VARCHAR}
-    where sys_user_role_id = #{sysUserRoleId,jdbcType=VARCHAR}
-  </update>
+
+    <insert id="insert" parameterType="cn.middle.pojo.SysUserRole">
+        insert into sys_user_role (sys_user_role_id, user_id, role_id ) values 
+        (#{sysUserRoleId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR} )
+    </insert>
+    
+    <insert id="insertSelective" parameterType="cn.middle.pojo.SysUserRole">
+        insert into sys_user_role
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sysUserRoleId != null">
+                sys_user_role_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="roleId != null">
+                role_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sysUserRoleId != null">
+                #{sysUserRoleId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="roleId != null">
+                #{roleId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="cn.middle.pojo.SysUserRole">
+        update sys_user_role
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="roleId != null">
+                role_id = #{roleId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where sys_user_role_id = #{sysUserRoleId,jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateByPrimaryKey" parameterType="cn.middle.pojo.SysUserRole">
+        update sys_user_role
+        set user_id = #{userId,jdbcType=VARCHAR},
+        role_id = #{roleId,jdbcType=VARCHAR}
+        where sys_user_role_id = #{sysUserRoleId,jdbcType=VARCHAR}
+    </update>
 </mapper>

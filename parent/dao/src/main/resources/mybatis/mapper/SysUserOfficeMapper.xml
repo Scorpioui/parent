@@ -1,71 +1,77 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="cn.middle.mapper.SysUserOfficeMapper" >
-  <resultMap id="BaseResultMap" type="cn.middle.pojo.SysUserOffice" >
-    <id column="sys_user_office_id" property="sysUserOfficeId" jdbcType="VARCHAR" />
-    <result column="user_id" property="userId" jdbcType="VARCHAR" />
-    <result column="office_id" property="officeId" jdbcType="VARCHAR" />
-  </resultMap>
-  <sql id="Base_Column_List" >
-    sys_user_office_id, user_id, office_id
-  </sql>
-  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select 
-    <include refid="Base_Column_List" />
-    from sys_user_office
-    where sys_user_office_id = #{sysUserOfficeId,jdbcType=VARCHAR}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
-    delete from sys_user_office
-    where sys_user_office_id = #{sysUserOfficeId,jdbcType=VARCHAR}
-  </delete>
-  <insert id="insert" parameterType="cn.middle.pojo.SysUserOffice" >
-    insert into sys_user_office (sys_user_office_id, user_id, office_id
-      )
-    values (#{sysUserOfficeId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR}, #{officeId,jdbcType=VARCHAR}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="cn.middle.pojo.SysUserOffice" >
-    insert into sys_user_office
-    <trim prefix="(" suffix=")" suffixOverrides="," >
-      <if test="sysUserOfficeId != null" >
-        sys_user_office_id,
-      </if>
-      <if test="userId != null" >
-        user_id,
-      </if>
-      <if test="officeId != null" >
-        office_id,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides="," >
-      <if test="sysUserOfficeId != null" >
-        #{sysUserOfficeId,jdbcType=VARCHAR},
-      </if>
-      <if test="userId != null" >
-        #{userId,jdbcType=VARCHAR},
-      </if>
-      <if test="officeId != null" >
-        #{officeId,jdbcType=VARCHAR},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="cn.middle.pojo.SysUserOffice" >
-    update sys_user_office
-    <set >
-      <if test="userId != null" >
-        user_id = #{userId,jdbcType=VARCHAR},
-      </if>
-      <if test="officeId != null" >
-        office_id = #{officeId,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where sys_user_office_id = #{sysUserOfficeId,jdbcType=VARCHAR}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="cn.middle.pojo.SysUserOffice" >
-    update sys_user_office
-    set user_id = #{userId,jdbcType=VARCHAR},
-      office_id = #{officeId,jdbcType=VARCHAR}
-    where sys_user_office_id = #{sysUserOfficeId,jdbcType=VARCHAR}
-  </update>
+<mapper namespace="cn.middle.mapper.SysUserOfficeMapper">
+    <resultMap id="BaseResultMap" type="cn.middle.pojo.SysUserOffice">
+        <id column="sys_user_office_id" jdbcType="VARCHAR" property="sysUserOfficeId" />
+        <result column="user_id" jdbcType="VARCHAR" property="userId" />
+        <result column="office_id" jdbcType="VARCHAR" property="officeId" />
+    </resultMap>
+    
+    <sql id="Base_Column_List">
+        sys_user_office_id, user_id, office_id
+    </sql>
+    
+    <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+            <include refid="Base_Column_List" />
+        from sys_user_office
+        where sys_user_office_id = #{sysUserOfficeId,jdbcType=VARCHAR}
+    </select>
+    
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+        delete from sys_user_office
+        where sys_user_office_id = #{sysUserOfficeId,jdbcType=VARCHAR}
+    </delete>
+    
+    <insert id="insert" parameterType="cn.middle.pojo.SysUserOffice">
+        insert into sys_user_office (sys_user_office_id, user_id, office_id )
+        values (#{sysUserOfficeId,jdbcType=VARCHAR}, #{userId,jdbcType=VARCHAR},
+        #{officeId,jdbcType=VARCHAR} )
+    </insert>
+    
+    <insert id="insertSelective" parameterType="cn.middle.pojo.SysUserOffice">
+        insert into sys_user_office
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sysUserOfficeId != null">
+                sys_user_office_id,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="officeId != null">
+                office_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sysUserOfficeId != null">
+                #{sysUserOfficeId,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="officeId != null">
+                #{officeId,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    
+    <update id="updateByPrimaryKeySelective" parameterType="cn.middle.pojo.SysUserOffice">
+        update sys_user_office
+        <set>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=VARCHAR},
+            </if>
+            <if test="officeId != null">
+                office_id = #{officeId,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where sys_user_office_id = #{sysUserOfficeId,jdbcType=VARCHAR}
+    </update>
+    
+    <update id="updateByPrimaryKey" parameterType="cn.middle.pojo.SysUserOffice">
+        update sys_user_office
+        set user_id = #{userId,jdbcType=VARCHAR},
+        office_id = #{officeId,jdbcType=VARCHAR}
+        where sys_user_office_id = #{sysUserOfficeId,jdbcType=VARCHAR}
+    </update>
 </mapper>
